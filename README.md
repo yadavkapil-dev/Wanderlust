@@ -73,8 +73,8 @@ Dependencies as listed in `package.json`:
 **Install**
 
 ```bash
-git clone https://github.com/Noobod/wanderlust.git
-cd wanderlust
+git clone https://github.com/yadavkapil-dev/Wanderlust.git
+cd Wanderlust
 npm install
 ```
 

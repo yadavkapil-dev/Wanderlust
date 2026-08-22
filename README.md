@@ -1,402 +1,130 @@
-# Wanderlust — Accommodation Listings & Reviews Platform
+# Wanderlust
 
-Wanderlust is a full-stack accommodation listings and reviews platform inspired by modern travel marketplace applications such as Airbnb.
-
-The project was built to practice end-to-end web application development using the MERN ecosystem's backend technologies, server-side rendering with EJS, authentication, authorization, CRUD operations, image uploads, validation, and database modelling.
-
-> **Note:** Wanderlust is **not** a booking or reservation system. The application focuses on accommodation listings, user authentication, and review management.
+Wanderlust is a server-rendered accommodation listings and reviews platform built with Node.js, Express, MongoDB, and EJS. Authenticated users can create, edit, and delete their own listings with an uploaded image and a geocoded location; any logged-in user can leave a rating and comment on a listing. There is no booking, reservation, availability, or payment functionality — listings are browsed and reviewed, not booked.
 
 ---
 
-# Live Demo
+## Live Demo
 
 https://wanderlust-zba2.onrender.com/listings
 
 ---
 
-# Demo Account
+## Try It Out
 
-**Email**
+No signup needed — log in with the shared demo account:
 
-```
-demo@gmail.com
-```
+- **Username:** `demo`
+- **Password:** `demo`
 
-**Password**
-
-```
-demo
-```
-
-*(Update these credentials if they change.)*
+This is a shared account. Any listing or review you create with it is visible to everyone else using the demo, and may be edited or deleted by other visitors.
 
 ---
 
-# Project Overview
+## Tech Stack
 
-Managing accommodation listings involves more than simply displaying data. Property owners need a way to create and manage listings, upload images, and receive reviews, while visitors need an intuitive interface to browse listings and share feedback.
+Dependencies as listed in `package.json`:
 
-Wanderlust demonstrates how these workflows can be implemented in a traditional server-rendered web application using Node.js, Express.js, MongoDB, Passport.js, and EJS.
-
----
-
-# Objectives
-
-This project was built to gain practical experience with:
-
-- MVC architecture
-- Server-side rendering
-- CRUD operations
-- MongoDB data modelling
-- User authentication
-- Authorization
-- Image uploads
-- Form validation
-- Interactive maps
-- Session management
-- Error handling
+- Express 5, Node.js
+- MongoDB via Mongoose
+- EJS templating via `ejs-mate`
+- Passport / `passport-local` / `passport-local-mongoose` — session-based authentication
+- `express-session` + `connect-mongo` — session store in MongoDB
+- `connect-flash` — flash messages
+- Joi — server-side validation
+- Multer + `multer-storage-cloudinary` + `cloudinary` — image upload and hosting
+- `@mapbox/mapbox-sdk` — forward geocoding for listing locations
+- `method-override`, `body-parser`, `cookie-parser`, `dotenv`
 
 ---
 
-# Features
+## Features
 
-## User Authentication
+**Listings**
+- Create, edit, delete, and browse listings (owner-only edit/delete)
+- Image upload to Cloudinary via Multer
+- Location is forward-geocoded through Mapbox and stored as GeoJSON on the listing
+- Text search across title, location, and country (`?search=` query param)
 
-- User registration
-- User login
-- User logout
-- Password hashing
-- Session-based authentication using Passport.js
+**Reviews**
+- Add a star rating and comment to a listing
+- Delete your own reviews
+- Deleting a listing cascades to delete its reviews
 
----
+**Authentication & Authorization**
+- Signup, login, logout via Passport local strategy
+- Session-based auth, sessions stored in MongoDB
+- Only a listing's owner can edit or delete it; only a review's author can delete it
 
-## Authorization
-
-- Users can only edit their own listings.
-- Users can only delete their own listings.
-- Users can only delete reviews they created.
-
----
-
-## Listings
-
-- Create listings
-- Edit listings
-- Delete listings
-- Browse all listings
-- View listing details
+**Category filters and tax toggle are cosmetic only:**
+- The category chips (Trending, Rooms, Beach, etc.) above the listings grid only toggle a CSS `active-filter` class on click — they do not filter the listings shown.
+- The "Display total after taxes" switch toggles the visibility of a fixed `+18% GST` string next to the price — it does not calculate tax from the actual price.
 
 ---
 
-## Reviews
+## Local Setup
 
-- Add reviews
-- Delete reviews
-- Rating system
+**Prerequisites**
+- Node.js 20.19.2 (per `package.json` `engines`)
+- A MongoDB connection string (Atlas or local)
+- A Cloudinary account (cloud name, API key, API secret)
+- A Mapbox access token
 
----
-
-## Images
-
-- Upload listing images
-- Cloudinary image hosting
-- Multer upload middleware
-
----
-
-## Maps
-
-- Display listing locations using Mapbox
-
----
-
-## Validation
-
-- Joi server-side validation
-- Flash messages
-- Error handling middleware
-
----
-
-# Tech Stack
-
-## Backend
-
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- Passport.js (Local Strategy)
-- Express Session
-- Connect-Mongo
-- Joi
-
----
-
-## Frontend
-
-- EJS
-- Bootstrap
-- HTML
-- CSS
-- JavaScript
-
----
-
-## Third-Party Services
-
-- Cloudinary
-- Mapbox
-
----
-
-# Architecture
-
-The project follows the MVC (Model–View–Controller) architecture.
-
-```
-Browser
-   │
-   ▼
-Express Routes
-   │
-   ▼
-Controllers
-   │
-   ▼
-Models (Mongoose)
-   │
-   ▼
-MongoDB
-```
-
-Project responsibilities are separated into:
-
-- Models
-- Views
-- Controllers
-- Routes
-- Middleware
-- Utilities
-
----
-
-# Project Structure
-
-```text
-├── controllers/
-├── middleware/
-├── models/
-├── public/
-├── routes/
-├── utils/
-├── views/
-├── app.js
-├── cloudConfig.js
-├── schema.js
-└── package.json
-```
-
----
-
-# Authentication Flow
-
-```
-User
-   │
-Register/Login
-   │
-Passport Local Strategy
-   │
-Session Created
-   │
-Express Session
-   │
-Mongo Session Store
-   │
-Authenticated Requests
-```
-
-Authentication uses:
-
-- Passport.js
-- Express Session
-- Connect-Mongo
-
-This project uses **session-based authentication**, not JWT.
-
----
-
-# Data Models
-
-Main collections include:
-
-- Users
-- Listings
-- Reviews
-
-Relationships:
-
-- A user owns many listings.
-- A listing contains multiple reviews.
-- Each review belongs to a user.
-
----
-
-# Validation
-
-Validation is performed using:
-
-- Joi schemas
-- Middleware
-- Mongoose validation
-- Flash messages
-
-This prevents invalid data from reaching the database.
-
----
-
-# Image Upload Workflow
-
-```
-Browser
-
-↓
-
-Multer
-
-↓
-
-Cloudinary
-
-↓
-
-Image URL stored in MongoDB
-```
-
----
-
-# Map Integration
-
-Mapbox is used to display listing locations.
-
-Listings store location information which is rendered on interactive maps.
-
----
-
-# Running Locally
-
-Clone the repository.
+**Install**
 
 ```bash
-git clone https://github.com/yadavkapil-dev/Wanderlust.git
-```
-
-Install dependencies.
-
-```bash
+git clone https://github.com/Noobod/wanderlust.git
+cd wanderlust
 npm install
 ```
 
-Start the application.
+**Environment variables**
+
+Copy `.env.example` to `.env` and fill in every value:
+
+```ini
+CLOUD_NAME=
+CLOUD_API_KEY=
+CLOUD_API_SECRET=
+
+MAP_TOKEN=
+
+ATLASDB_URL=
+
+SECRET=
+```
+
+- `CLOUD_NAME`, `CLOUD_API_KEY`, `CLOUD_API_SECRET` — Cloudinary credentials, read in `cloudConfig.js`
+- `MAP_TOKEN` — Mapbox access token, read in `controllers/listing.js`
+- `ATLASDB_URL` — MongoDB connection string, read in `app.js`
+- `SECRET` — session/cookie signing secret, read in `app.js`
+
+**Run**
 
 ```bash
 npm start
 ```
 
----
+This runs `node app.js`. The server listens on port `8080` (hardcoded in `app.js`, not configurable via env var).
 
-# Environment Variables
-
-Create a `.env` file.
-
-```ini
-ATLASDB_URL=
-
-CLOUD_NAME=
-
-CLOUD_API_KEY=
-
-CLOUD_API_SECRET=
-
-MAP_TOKEN=
-
-SECRET=
-```
+`npm test` is currently a placeholder (`echo "Error: no test specified" && exit 1`) and will fail — there is no test suite yet.
 
 ---
 
-# What I Learned
+## Known Limitations
 
-Through this project I gained practical experience with:
-
-- MVC architecture
-- Express.js routing
-- MongoDB data modelling
-- Passport.js authentication
-- Session management
-- Authorization middleware
-- Cloudinary integration
-- File uploads using Multer
-- Mapbox integration
-- Joi validation
-- Server-side rendering with EJS
-- Error handling
-- CRUD application design
+- No booking, reservation, or availability system
+- No payment integration
+- No automated tests — `npm test` is a failing placeholder, not a real test suite
+- No Docker setup
+- No CI/CD pipeline
+- No CSRF protection
+- No pagination — listing and search queries load all matching documents at once
+- No database indexes defined on any model
+- No cleanup of replaced Cloudinary assets — updating a listing's image uploads a new file but does not delete the one it replaces, so orphaned images accumulate in Cloudinary
 
 ---
 
-# Current Limitations
-
-This project focuses on accommodation listings and reviews.
-
-The following features are **not implemented**:
-
-- Reservation or booking workflow
-- Payment processing
-- Availability calendar
-- Customer messaging
-- Notifications
-- Docker
-- CI/CD pipelines
-- Automated tests
-- CSRF protection
-- Rate limiting
-- Helmet/CSP configuration
-- Automatic Cloudinary asset cleanup
-- Multi-tenant architecture
-
----
-
-# Future Improvements
-
-Potential future enhancements include:
-
-- Reservation system
-- Booking management
-- Payment integration
-- Availability calendar
-- Advanced search and filtering
-- Wishlist functionality
-- Email notifications
-- Docker containerization
-- CI/CD pipeline
-- Automated testing
-- Stronger security hardening
-- Improved image lifecycle management
-
----
-
-# Resume-Safe Project Summary
-
-Wanderlust is a full-stack accommodation listings and reviews platform built using Node.js, Express.js, MongoDB, Passport.js, and EJS.
-
-The application demonstrates user authentication, authorization, CRUD operations, image uploads with Cloudinary, interactive maps using Mapbox, server-side rendering, and MongoDB data modelling.
-
-It is **not** a booking or payment platform, and no reservation workflow has been implemented.
-
----
-
-# License
+## License
 
 This project was built for learning purposes and to demonstrate full-stack software engineering concepts.
